@@ -11,7 +11,6 @@ public class PrintDir {
 		
 		for(File temp=file;temp!=null&&!temp.getAbsolutePath().equals(root);temp=temp.getParentFile()){
 			s.add("-> "+temp.getName());
-			System.out.println(temp.getName());
 		}
 		s.add(root);
 		
