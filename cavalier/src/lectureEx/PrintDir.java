@@ -17,7 +17,7 @@ public class PrintDir {
 		}
 		
 		
-		String ss = "";
+		String ss = "sdfsfs";
 		for(;file!=null;file=file.getParentFile()){
 			System.out.println(file.getName());
 		}
