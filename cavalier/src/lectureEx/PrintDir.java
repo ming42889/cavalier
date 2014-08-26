@@ -9,20 +9,34 @@ public class PrintDir {
 		String root = file.toPath().getRoot().toString();//root dir
 		Stack<String> s = new Stack<String>();
 		
-		System.out.println(root);
-		System.out.println(new File("2").getAbsolutePath());
+		for(File temp=file;temp!=null&&!temp.getAbsolutePath().equals(root);temp=temp.getParentFile()){
+			s.add("-> "+temp.getName());
+			System.out.println(temp.getName());
+		}
+		s.add(root);
+		
+		int space = s.size()+1;
+		while(!s.isEmpty()){
+			System.out.println(space(space-(s.size()+1))+s.pop());
+		}
+		
+		printFileList(file,space);
+			
+		
+	}
+	
+	static void printFileList(File file, int space){
 		for (File f:file.listFiles()){
-			if (f.getName()=="Users")
-			System.out.print(" ->");
+			if (f.isDirectory()) {
+				System.out.println(space(space)+"-> "+f.getName());
+				printFileList(f,space+1);
+			}
+			else System.out.println(space(space)+"-> "+f.getName());
 		}
-		
-		
-		String ss = "sdfsfs";
-		for(;file!=null;file=file.getParentFile()){
-			System.out.println(file.getName());
-		}
-		
-		
+	}
+	static String space(int n){
+		if(n<=0) return "";	
+		return String.format("%1$"+n+"s", "");
 	}
 
 }
