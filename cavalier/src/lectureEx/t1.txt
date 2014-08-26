@@ -1,0 +1,10 @@
+question1: 1
+question2: 4
+question3: 2
+question4: 1,3
+question5: 2
+question6: 1
+question7: 1
+question8: 2
+question9: 2,3,4,5
+question10: 4
