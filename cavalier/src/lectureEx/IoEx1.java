@@ -6,13 +6,13 @@ import java.io.InputStreamReader;
 public class IoEx1 {
 	public static void main(String[] args){
 		char c;
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Type in input:");
-		try {
-			System.out.println(br.readLine());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		try{
+		
+			System.out.print(br.readLine());
+		} 
+		catch (Exception e){}
 	}
 }
