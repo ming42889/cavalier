@@ -10,11 +10,12 @@ public class DivisorTheadDemo {
 		double startTime = System.currentTimeMillis();
 		LinkedList<int[]> result = new LinkedList<int[]>();
 		LinkedList<Thread> ThreadList = new LinkedList<Thread>();
-
-		int numOfThread = 8;
+		
+		int subsetSize = 5000;
+	
 		int problemSize =100000;
+		int numOfThread = problemSize/subsetSize;
 		PrimeList pl = new PrimeList((int)Math.sqrt(problemSize));
-		int subsetSize = problemSize/numOfThread;
 		
 		//create thread and add to the threadlist
 		for (int i=0;i<numOfThread;i++) ThreadList.add(new DivisorThread(pl,i*subsetSize+1,(i+1)*subsetSize,result));
@@ -36,8 +37,8 @@ public class DivisorTheadDemo {
 		//converge the result
 		int maxDiv = 0;
 		int maxInt = 0;
-		int[] r;
 		itr = result.listIterator();		
+		int[] r;
 		while(itr.hasNext()){
 			r = (int[])itr.next();
 			if(maxDiv<r[0]) maxDiv = r[0];
