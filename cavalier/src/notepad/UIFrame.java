@@ -43,7 +43,7 @@ public class UIFrame extends JFrame implements ActionListener{
 		int w = (int)r.getWidth();
 		int h = (int)r.getHeight();
 		
-		//System.out.println(w+", "+h);
+		System.out.println(w+", "+h);
 
 		p.setProperty("x", "" + x);
 		p.setProperty("y", "" + y);
@@ -68,14 +68,14 @@ public class UIFrame extends JFrame implements ActionListener{
 		int h = Integer.parseInt(p.getProperty("h"));
 
 		Rectangle r = new Rectangle(x,y,w,h);
-		//System.out.println(w+", "+h);
+		System.out.println(w+", "+h);
 		setBounds(r);
 	}
 	
 	private void init(){
 		//add text panel
 		TextArea ta = new TextArea("",PANEL_WIDTH, PANEL_HEIGHT, TextArea.SCROLLBARS_VERTICAL_ONLY);
-		add(ta);
+		getContentPane().add(ta);
 		pack();
 		
 		//store Location information when exit
@@ -101,8 +101,7 @@ public class UIFrame extends JFrame implements ActionListener{
 		} else {
 			setLocationByPlatform(true);
 		}
-		
-		setVisible(true);
+	
 	}
 
 	public void actionPerformed(ActionEvent e) {
