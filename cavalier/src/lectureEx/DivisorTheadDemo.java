@@ -11,10 +11,10 @@ public class DivisorTheadDemo {
 		LinkedList<int[]> result = new LinkedList<int[]>();
 		LinkedList<Thread> ThreadList = new LinkedList<Thread>();
 		
-		int subsetSize = 5000;
+		int numOfThread = 4;
 	
 		int problemSize =100000;
-		int numOfThread = problemSize/subsetSize;
+		int subsetSize = problemSize/numOfThread;
 		PrimeList pl = new PrimeList((int)Math.sqrt(problemSize));
 		
 		//create thread and add to the threadlist
