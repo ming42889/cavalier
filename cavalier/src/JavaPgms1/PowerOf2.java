@@ -2,13 +2,7 @@ package JavaPgms1;
 
 public class PowerOf2{
 	public static boolean isPowerOf2(int i){
-		if (i<1) return false;
-		if (i==1) return true;
-		while(i>1){
-			if(i%2!=0) return false;
-			i = i/2;
-		}
-		return true;
+		return ((i != 0) && ((i & (~i + 1)) == i));
 	}
 
 	public static void main(String[] args){
