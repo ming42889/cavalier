@@ -1,7 +1,4 @@
 package notepad;
-
-import java.io.File;
-
 import javax.swing.JFrame;
 
 
@@ -22,9 +19,5 @@ public class UIFrame{
 		//frame.setLayout(new FlowLayout());
 		frame.setVisible(true);
     }
-	
-	private static void open(String s){
-		File f = new File(s);
-	}
 	
 }

@@ -1,7 +1,6 @@
 package lectureEx.network;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -38,5 +37,6 @@ public class DateClient {
 		in.close();
 		out.close();
 		socket.close();
+		sc.close();
 	}
 }
