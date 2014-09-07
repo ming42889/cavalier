@@ -1,8 +1,6 @@
 package notepad;
 
-
 import java.awt.Frame;
-import java.awt.MenuShortcut;
 import java.awt.Rectangle;
 import java.awt.TextArea;
 import java.awt.datatransfer.Clipboard;
@@ -22,7 +20,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -42,7 +39,7 @@ public class NotePad extends JFrame implements ActionListener{
 	private static final int PANEL_WIDTH = 500;
 	private static final int PANEL_HEIGHT = 500;
 	private final TextArea text = new TextArea("",PANEL_WIDTH, PANEL_HEIGHT, TextArea.SCROLLBARS_VERTICAL_ONLY);
-	
+
 
 	//menu item reference
 	private JMenuItem newFile;
@@ -136,6 +133,7 @@ public class NotePad extends JFrame implements ActionListener{
 			}
 		} else {
 			setLocationByPlatform(true);
+			setSize(PANEL_WIDTH, PANEL_HEIGHT);
 		}
 
 	}
@@ -165,10 +163,10 @@ public class NotePad extends JFrame implements ActionListener{
 		this.paste.addActionListener(this);
 		this.findNext.addActionListener(this);
 		this.about.addActionListener(this);
-		
+
 		//short cut
 		this.findNext.setAccelerator(KeyStroke.getKeyStroke('F',KeyEvent.CTRL_DOWN_MASK));
-			
+
 
 	}
 
@@ -197,7 +195,7 @@ public class NotePad extends JFrame implements ActionListener{
 		JMenu searchMenu = new JMenu("Search");
 		searchMenu.add(this.findNext);
 		menuBar.add(searchMenu);
-		
+
 		//help menu
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.add(this.about);
@@ -216,8 +214,8 @@ public class NotePad extends JFrame implements ActionListener{
 		if (e.getSource()==this.paste) paste();
 		if (e.getSource()==this.findNext) findNext();
 		if (e.getSource()==this.about) about();
-		
-		}
+
+	}
 
 	//file operations
 	//close file that's currently being access, return true if succeed,false if canceled
@@ -242,7 +240,7 @@ public class NotePad extends JFrame implements ActionListener{
 		if (closeCurrentFile()) this.text.setText("");
 		fileName = "Untitled";
 		this.setTitle(fileName+" - NotePad");
-		
+
 	}
 
 	private void openFile(){
@@ -286,7 +284,7 @@ public class NotePad extends JFrame implements ActionListener{
 
 		} else saveAs();
 	}
-	
+
 	private void saveAs(){
 		JFileChooser save = new JFileChooser(this.filePath);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("txt file", "txt");
@@ -309,9 +307,9 @@ public class NotePad extends JFrame implements ActionListener{
 
 		}
 		this.setTitle(this.fileName+" - NotePad");
-		
+
 	}
-	
+
 	//edit operations
 	private void cut(){
 		copy();
@@ -333,13 +331,13 @@ public class NotePad extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void findNext(){
 		String s = JOptionPane.showInputDialog(
-                this,
-                "enter the word or words you want to find",
-                "Find",
-                JOptionPane.PLAIN_MESSAGE);
+				this,
+				"enter the word or words you want to find",
+				"Find",
+				JOptionPane.PLAIN_MESSAGE);
 		if (s!=null){
 			//System.out.println(s+" , "+text.getCaretPosition());
 			int i = text.getText().substring(text.getCaretPosition()).indexOf(s);
@@ -353,9 +351,9 @@ public class NotePad extends JFrame implements ActionListener{
 			}
 		}
 	}
-	
 
-	
+
+
 	private void about(){
 		String aboutContent = "NotePad\n"
 				+"Version "+version+"\n"
