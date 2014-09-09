@@ -5,29 +5,47 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.Queue;
 
 public class ServerThread extends Thread{
-	private int client_port;
-	private InetAddress client_host;
-	private Socket sock;
+	private ServerSocket listenfd;
 	private BufferedReader in;
 	private PrintWriter out;
+	private Socket connfd;
+	private int uid;
+	private Queue<ServerThread> q;
 	
-	public ServerThread(InetAddress client_host, int client_port){
-		this.client_host = client_host;
-		this.client_port = client_port;
+	public ServerThread(int uid, Queue<ServerThread> tq, ServerSocket ss){
+		this.uid = uid;
+		this.listenfd = ss;
+		this.q = tq;
+	}
+	
+	public int getLocalPort(){
+		return listenfd.getLocalPort();
+	}
+	
+	public int getUid(){
+		return uid;
+	}
+	
+	public void write(String mesg){
+		out.println(mesg);
+		out.flush();
 	}
 	
 	public void run(){
 		
 		try {
-			sock = new Socket();
-			out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
-			//in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out.println(sock.getLocalPort());
+			connfd = listenfd.accept();
+			in = new BufferedReader(new InputStreamReader(connfd.getInputStream()));
+			out = new PrintWriter(new OutputStreamWriter(connfd.getOutputStream()));
+			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,7 +53,38 @@ public class ServerThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(client_port);
+	
+		String s;
+		try {
+			while( (s = uid+": "+in.readLine())!=null){
+				for(ServerThread st: q) st.write(s);
+				
+				/*
+				out.println(s);
+				out.flush();
+				System.out.println(s);*/
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			if (e1 instanceof SocketException){
+				System.out.println("SocketException");
+			} else e1.printStackTrace();
+		}
+		
+		
+		//closing
+		try {
+			in.close();
+			out.close();
+			connfd.close();
+			listenfd.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
+	
+
 
 }
