@@ -1,73 +1,81 @@
 package lectureEx.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 public class Client {
-	public static void main(String args[]) throws IOException {
-		Socket socket = null;
-		BufferedReader in = null;
-		PrintWriter out = null;
-		String line;
-		String host = "LocalHost";
-		int port = 8001;
-		
+	private Socket socket;
+	private ObjectInputStream in;
+	private ObjectOutputStream out;
+	private ClientThread t;
+	private ClientGui gui;
+	private String name;
+	
+	public Client(String name, ClientGui gui){
+		this.name = name;
+		this.gui = gui;
+	}
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	protected boolean connect(String host, int port){
 		//connect to the server
+		System.out.println("connecting");
 		try{		
 			socket = new Socket(host, port);	
-		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host: "+host);
-			System.exit(1);
-		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for "+"the connection to: "+host);
-			System.exit(1);
-		}
-		
-		
-		System.out.println("local: "+socket.getLocalPort()+", remote: "+socket.getPort());
-		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		port = Integer.parseInt(in.readLine()); // a blocking read
-		System.out.println("reconnect to port: "+port);
-		in.close();
-		
-		//reconnect to a new port
-		try{		
-			socket = new Socket(host, port);	
-		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host: "+host);
-			System.exit(1);
-		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for "+"the connection to: "+host);
-			System.exit(1);
-		}
-		
-		ClientThread t = new ClientThread(socket);
-		t.start();
-		
-		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-		Scanner sc = new Scanner(System.in);
-		line="";
-		while(line!="quit"){
-			line = sc.nextLine();
-			out.println(line);
+			out =new ObjectOutputStream(socket.getOutputStream());
 			out.flush();
+			in = new ObjectInputStream(socket.getInputStream());
+			//System.out.println("connected");
+			
+		} catch (UnknownHostException e1) {
+			System.err.println("Don't know about host: "+host);
+			return false;
+		} catch (IOException e2) {
+			System.err.println("Couldn't get I/O for "+"the connection to: "+host);
+			return false;
 		}
-
+		
+		if (socket.isConnected())
+			System.out.println(socket.getPort()+", "+socket.getLocalPort());
+		
+		t = new ClientThread(in, gui);
+		t.start();	
+		return true;
+	}
+	
+	protected void sendMessage(Message msg){
+		try {
+			out.writeObject(msg);
+			//out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	protected void disconnect(){	
+		try {
+			in.close();
+			out.close();
+			socket.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try {
 			t.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		sc.close();
-		out.close();
-		socket.close();
-		
 	}
+	
 }

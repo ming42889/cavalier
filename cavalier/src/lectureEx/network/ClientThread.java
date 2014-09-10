@@ -1,35 +1,31 @@
 package lectureEx.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import java.io.ObjectInputStream;
+
 
 public class ClientThread extends Thread{
-	private BufferedReader in;
-	private Socket sock;
+	private ObjectInputStream in;
+	private ClientGui gui;
 	
-	public ClientThread(Socket sock){
-		this.sock = sock;
+	public ClientThread(ObjectInputStream in, ClientGui gui){
+		this.in = in;
+		this.gui = gui;
 	}
-	
-
 	
 	public void run(){
+		Message msg;
+		
 		try {
-			in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-			
-			while(true){
-				System.out.println(in.readLine());
+			while((msg=(Message) in.readObject())!=null){
+				gui.append(msg.getContent()+"\n");
 			}
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			gui.append("connection lost");
+			gui.connectionFailed();
 		}
-
-		
 	}
-	
-
-
 }

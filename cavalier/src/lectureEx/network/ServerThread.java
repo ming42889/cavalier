@@ -1,70 +1,59 @@
 package lectureEx.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Iterator;
 import java.util.Queue;
 
 public class ServerThread extends Thread{
-	private ServerSocket listenfd;
-	private BufferedReader in;
-	private PrintWriter out;
+	private ObjectInputStream in;
+	private ObjectOutputStream out;
 	private Socket connfd;
-	private int uid;
 	private Queue<ServerThread> q;
 	
-	public ServerThread(int uid, Queue<ServerThread> tq, ServerSocket ss){
-		this.uid = uid;
-		this.listenfd = ss;
+	public ServerThread(Queue<ServerThread> tq, Socket connfd){
+		this.connfd = connfd;
 		this.q = tq;
 	}
 	
 	public int getLocalPort(){
-		return listenfd.getLocalPort();
+		return connfd.getLocalPort();
 	}
 	
-	public int getUid(){
-		return uid;
-	}
 	
-	public void write(String mesg){
-		out.println(mesg);
-		out.flush();
-	}
-	
-	public void run(){
-		
+	public void write(Message msg){
 		try {
-			connfd = listenfd.accept();
-			in = new BufferedReader(new InputStreamReader(connfd.getInputStream()));
-			out = new PrintWriter(new OutputStreamWriter(connfd.getOutputStream()));
-			
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			out.writeObject(msg);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
 	
-		String s;
+	public void run(){	
+		
 		try {
-			while( (s = uid+": "+in.readLine())!=null){
-				for(ServerThread st: q) st.write(s);
-				
-				/*
-				out.println(s);
-				out.flush();
-				System.out.println(s);*/
-			}
+			out =new ObjectOutputStream(connfd.getOutputStream());
+			out.flush();
+			in = new ObjectInputStream(connfd.getInputStream());	
 		} catch (IOException e1) {
+			System.err.println("error when initializing I/O streams");
+			if (e1 instanceof SocketException){
+				System.out.println("SocketException");
+			}else e1.printStackTrace();
+		}
+			
+		//broadcasting
+		Message msg;
+		try {
+			while( (msg = (Message) in.readObject())!=null){
+				if (msg.getType()!=Message.LOGOUT)
+					for(ServerThread st: q) st.write(msg);
+				else break;
+			}
+		} catch (IOException | ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			if (e1 instanceof SocketException){
 				System.out.println("SocketException");
@@ -77,7 +66,6 @@ public class ServerThread extends Thread{
 			in.close();
 			out.close();
 			connfd.close();
-			listenfd.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
