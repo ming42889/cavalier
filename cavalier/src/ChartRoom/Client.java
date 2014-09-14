@@ -1,4 +1,4 @@
-package lectureEx.network;
+package ChartRoom;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -1,4 +1,4 @@
-package lectureEx.network;
+package ChartRoom;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,7 +24,7 @@ public class ClientThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			gui.append("connection lost");
+			gui.append("connection lost\n");
 			gui.connectionFailed();
 		}
 	}
